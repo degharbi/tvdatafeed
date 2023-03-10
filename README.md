@@ -67,7 +67,18 @@ To download the data use `tv.get_hist` method.
 It accepts following arguments and returns pandas dataframe
 
 ```python
-(symbol: str, exchange: str = 'NSE', interval: Interval = Interval.in_daily, n_bars: int = 10, fut_contract: int | None = None, extended_session: bool = False) -> DataFrame)
+(
+   symbol: str, 
+   exchange: str = 'NSE', 
+   interval: Interval = Interval.in_daily, 
+   n_bars: int = 10, 
+   fut_contract: int | None = None, 
+   extended_session: bool = False,
+   host: str = '', 
+   port: int = 80, 
+   username: str = '', 
+   password: str = '',        
+) -> DataFrame)
 ```
 
 for example-
@@ -84,6 +95,18 @@ crudeoil_data = tv.get_hist(symbol='CRUDEOIL',exchange='MCX',interval=Interval.i
 
 # downloading data for extended market hours
 extended_price_data = tv.get_hist(symbol="EICHERMOT",exchange="NSE",interval=Interval.in_1_hour,n_bars=500, extended_session=False)
+
+# downloading data using a proxy server
+data_using_proxy = tv.get_hist(
+   symbol='AAPL', 
+   exchange='NASDAQ', 
+   interval=Interval.in_1_hour,
+   n_bars=1000,
+   host = '129.23.22.44', # this is just and example do not use it
+   port = 9333, # this is just and example do not use it
+   username = 'YourServerUserName',
+   password = 'YourServerPassword',
+   )
 ```
 
 ---

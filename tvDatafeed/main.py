@@ -81,10 +81,15 @@ class TvDatafeed:
 
         return token
 
-    def __create_connection(self):
+    def __create_connection(self, host, port, username, password):
         logging.debug("creating websocket connection")
         self.ws = create_connection(
-            "wss://data.tradingview.com/socket.io/websocket", headers=self.__ws_headers, timeout=self.__ws_timeout
+            "wss://data.tradingview.com/socket.io/websocket", 
+            headers=self.__ws_headers, 
+            timeout=self.__ws_timeout,
+            https_proxy_host=host,
+            https_proxy_port=port,
+            https_proxy_auth=(username, password)            
         )
 
     @staticmethod
@@ -193,6 +198,10 @@ class TvDatafeed:
         n_bars: int = 10,
         fut_contract: int = None,
         extended_session: bool = False,
+        host: str = '', 
+        port: int = 80, 
+        username: str = '', 
+        password: str = '',        
     ) -> pd.DataFrame:
         """get historical data
 
@@ -203,6 +212,10 @@ class TvDatafeed:
             n_bars (int, optional): no of bars to download, max 5000. Defaults to 10.
             fut_contract (int, optional): None for cash, 1 for continuous current contract in front, 2 for continuous next contract in front . Defaults to None.
             extended_session (bool, optional): regular session if False, extended session if True, Defaults to False.
+            host (str): host name of the proxy server. Defaults to empty string 
+            port (int): port number of the proxy server. Defaults to 80
+            username (str): username of the proxy server. Defaults to empty string
+            password (str): password of the proxy server. Defaults to empty string
 
         Returns:
             pd.Dataframe: dataframe with sohlcv as columns
@@ -213,7 +226,7 @@ class TvDatafeed:
 
         interval = interval.value
 
-        self.__create_connection()
+        self.__create_connection(host, port, username, password)
 
         self.__send_message("set_auth_token", [self.token])
         self.__send_message("chart_create_session", [self.chart_session, ""])
